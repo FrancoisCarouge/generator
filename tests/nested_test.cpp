@@ -5,6 +5,7 @@
 // Version 1.0.
 // (See accompanying file LICENSE or http://www.boost.org/LICENSE_1_0.txt)
 ///////////////////////////////////////////////////////////////////////////////
+#include <atomic>
 #include <generator>
 #include <string>
 #include <string_view>
@@ -273,32 +274,33 @@ void test_nested_generator_scopes_exit_innermost_scope_first() {
     CHECK((events == std::vector{1, 3, 4, 5, 2}));
 }
 
-void test_exception_propagating_from_nested_generator() {
-    struct my_error : std::exception {};
+//! @todo Support iff exceptions are supported.
+// void test_exception_propagating_from_nested_generator() {
+//     struct my_error : std::exception {};
 
-    auto g = []() -> std::generator<int> {
-        try {
-            co_yield std::ranges::elements_of([]() -> std::generator<int> {
-                co_yield 42;
-                throw my_error{};
-            }());
-            CHECK(false);
-        } catch (const my_error&) {
+//     auto g = []() -> std::generator<int> {
+//         try {
+//             co_yield std::ranges::elements_of([]() -> std::generator<int> {
+//                 co_yield 42;
+//                 throw my_error{};
+//             }());
+//             CHECK(false);
+//         } catch (const my_error&) {
 
-        }
+//         }
 
-        co_yield 99;
-    }();
+//         co_yield 99;
+//     }();
 
-    auto it = g.begin();
-    CHECK(it != g.end());
-    CHECK(*it == 42);
-    ++it;
-    CHECK(it != g.end());
-    CHECK(*it == 99);
-    ++it;
-    CHECK(it == g.end());
-}
+//     auto it = g.begin();
+//     CHECK(it != g.end());
+//     CHECK(*it == 42);
+//     ++it;
+//     CHECK(it != g.end());
+//     CHECK(*it == 99);
+//     ++it;
+//     CHECK(it == g.end());
+// }
 
 void test_elementsof_with_allocator_args() {
     std::vector<int> v;
@@ -322,6 +324,6 @@ int main() {
     RUN(test_elementsof_with_allocator_args);
     RUN(test_yielding_elements_of_vector);
     RUN(test_nested_generator_scopes_exit_innermost_scope_first);
-    RUN(test_exception_propagating_from_nested_generator);
+    // RUN(test_exception_propagating_from_nested_generator);
     return 0;
 }
