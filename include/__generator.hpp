@@ -36,6 +36,7 @@ using std::experimental::suspend_never;
 #include <utility>
 #include <concepts>
 #include <cassert>
+#include <memory>
 
 #if __has_include(<ranges>)
 #  include <ranges>
